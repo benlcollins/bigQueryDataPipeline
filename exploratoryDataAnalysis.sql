@@ -97,6 +97,48 @@ WHERE CAST(created AS DATE) > DATE_SUB(CURRENT_DATE(), INTERVAL 31 DAY)
 GROUP BY course_name, lecture_name
 ORDER BY lecture_completions DESC;
 
+-- What are the most popular times to complete lectures?
+-- create a histogram of lesson completion times by hour
+SELECT
+  lecture_hour
+  , COUNT(lecture_name) AS lecture_completions
+FROM (
+  SELECT 
+    EXTRACT(HOUR FROM created) AS lecture_hour
+    , lecture_name
+  FROM 
+    `PROJECT_ID.DATASET_ID.TABLE_ID`
+)
+GROUP BY lecture_hour
+ORDER BY lecture_hour ASC;
+
+-- use the REPEAT function to add a chart
+SELECT
+  lecture_hour
+  , COUNT(lecture_name) AS lecture_completions
+  , REPEAT('#', COUNT(lecture_name)) AS chart
+FROM (
+  SELECT 
+    EXTRACT(HOUR FROM created) AS lecture_hour
+    , lecture_name
+  FROM 
+    `PROJECT_ID.DATASET_ID.TABLE_ID`
+)
+GROUP BY lecture_hour
+ORDER BY lecture_hour ASC;
+
+
+-- first approach using the approx_quartiles function
+-- not working yet...
+SELECT 
+  APPROX_QUANTILES(EXTRACT(HOUR FROM created),24) AS lecture_hour
+  , COUNT(lecture_name)
+FROM 
+  `PROJECT_ID.DATASET_ID.TABLE_ID`;
+--LIMIT 10;
+--WHERE CAST(created AS DATE) > DATE_SUB(CURRENT_DATE(), INTERVAL 2 DAY);
+
+
 /* STUDENT ANALYSIS */
 
 -- student summary
