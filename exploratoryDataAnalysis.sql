@@ -193,7 +193,8 @@ ORDER BY
   , completions DESC;
 
 -- query 3: join
--- students from query 1 who do not appear in query 2 table
+-- students from query 1 who do not appear in query 2 
+-- this is a list of students who enrolled but haven't taken a lecture yet
 SELECT
   t1.user_email
   , t1.course_name
@@ -205,6 +206,23 @@ ON
   t1.user_email = t2.user_email
 WHERE t2.user_email IS NULL;
 
+-- next question
+-- how long would be a reasonable window to wait?
+-- if no engagement within 10 days, send a bump email
+-- filter out people with signup date < 10 days ago
+SELECT
+  t1.user_email
+  , t1.course_name
+  , t1.enrollment_enrolled_at
+FROM
+  `PROJECT_ID.DATASET_ID.TABLE_ID_1` AS t1
+LEFT JOIN 
+  `PROJECT_ID.DATASET_ID.TABLE_ID_2` AS t2
+ON
+  t1.user_email = t2.user_email
+WHERE 
+  t2.user_email IS NULL
+  AND CAST(t1.enrollment_created_at AS DATE) < DATE_SUB(current_date(),INTERVAL 10 DAY);
 
 
 /* TRANSACTIONS DATA */
