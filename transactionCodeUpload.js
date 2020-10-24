@@ -23,12 +23,19 @@ function onOpen() {
 
     ui.createMenu('Upload to BigQuery')
       .addItem('Upload data to BigQuery','loadData')
+      .addItem('Force Upload','forceUpload')
       .addToUi();
 }
 
 
+// force upload for manually fixed data
+function forceUpload() {
+  loadData(1);
+}
+
+
 // upload Sheets data to BigQuery
-function loadData() {
+function loadData(overide) {
   
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheetId = ss.getId();
@@ -37,18 +44,20 @@ function loadData() {
   const lastRow = sheet.getLastRow();
   const lastCol = sheet.getLastColumn();
   const transactions = sheet.getDataRange().getValues();
-  //console.log(transactions);
+  console.log(transactions.length);
 
   // identify if any monthly payment plans in data
   // All Course Bundle Monthly Payment Plan Lifetime Access
-  const problem = transactions.filter( transaction => transaction[8].includes('Monthly Payment Plan'));
-  console.log(problem.length);
+  const problemTransactions = transactions.filter( transaction => transaction[8].includes('Monthly Payment Plan'));
+  console.log(problemTransactions.length);
 
-  if (problem.length > 0) {
+  if (problemTransactions.length > 0 && overide !== 1) {
     // data contains monthly payment plans and needs manual clean up
+    //console.log('Manual attention required');
     GmailApp.sendEmail('ben@benlcollins.com','Manual Fix Required for Teachable Transactions Data','Transactions contain monthly payment plan and may require fix');
   }
   else {
+    //console.log('proceed with BQ upload');
     // transaction data does not contain monthly payment plan data
     // ok to upload to BigQuery
     // only run BigQuery load if there is new data
