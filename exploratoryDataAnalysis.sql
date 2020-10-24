@@ -24,13 +24,13 @@ GROUP BY course_name
 ORDER BY completions DESC;
 
 
--- course completions count
-SELECT course_name, COUNT(course_name) AS completions
+-- course lecture completions count
+SELECT course_name, COUNT(course_name) AS lecture_completions
 FROM `PROJECT_ID.DATASET_ID.TABLE_ID`
 GROUP BY course_name
-ORDER BY completions DESC;
+ORDER BY lecture_completions DESC;
 
--- course completions as a % of total, all time
+-- course lecture completions as a % of total, all time
 SELECT 
   course_name
   , COUNT(course_name) AS num_lecture_completions
@@ -164,6 +164,18 @@ SELECT user_name, user_email, COUNT(lecture_name) AS completions
 FROM `PROJECT_ID.DATASET_ID.TABLE_ID`
 GROUP BY user_name, user_email
 ORDER BY completions DESC;
+
+
+-- how many courses has a student signed up for
+SELECT 
+  user_email
+  , COUNT(course_name) AS signups
+FROM 
+  `PROJECT_ID.DATASET_ID.TABLE_ID`
+GROUP BY
+  user_email
+ORDER BY
+  signups DESC;
 
 
 -- How many students sign up but don't take a lecture?
