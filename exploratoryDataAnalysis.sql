@@ -240,3 +240,27 @@ WHERE
 /* TRANSACTIONS DATA */
 
 -- What are the most popular times to Purchase courses?
+
+
+
+/* MailChimp List Growth versus Teachable Enrollments */
+-- how do these two numbers compare?
+SELECT
+  mc.weekday,
+  mc.date AS mc_date,
+  DATE(te.enrollment_enrolled_at) AS te_date,
+  mc.growth AS list_growth,
+  COUNT(user_email) AS enrollments
+FROM
+  `PROJECT_ID.DATASET_ID.TABLE_ID_1` AS mc
+JOIN
+  `PROJECT_ID.DATASET_ID.TABLE_ID_2` AS te
+ON
+  mc.date = DATE(te.enrollment_enrolled_at)
+GROUP BY
+  mc.weekday,
+  mc.date,
+  te_date,
+  mc.growth
+ORDER BY
+  mc.date DESC;
