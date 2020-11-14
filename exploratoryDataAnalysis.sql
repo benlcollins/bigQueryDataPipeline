@@ -1,5 +1,5 @@
 /* 
- * Teachable Data Analysis Project in BigQuery
+ * Collins Analytics Data Pipeline Project in BigQuery
  * Ben Collins, 2020
  *
  * Remember to switch all IDs to your own in:
@@ -296,3 +296,21 @@ SELECT
   IF(list_growth > enrollments, 'list growth > enrollments', 'list growth <= enrollments') AS list_enrollment_category
 FROM
   le_data
+
+
+/* TWITTER QUERIES */
+
+-- most popular "tweeting" day by likes
+SELECT
+  EXTRACT(DATE FROM Datetime) AS tweet_date,
+  COUNT(Tweet) AS tweet_count,
+  SUM(Retweets) AS total_retweets,
+  SUM(Likes) AS total_likes
+FROM
+  `data-pipeline-292113.pipeline_version_1.twitter_metrics`
+WHERE
+  LEFT(Tweet,2) <> 'RT'
+GROUP BY
+  tweet_date
+ORDER BY 
+  total_likes DESC
